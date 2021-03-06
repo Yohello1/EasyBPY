@@ -1,18 +1,9 @@
 #region INFO
 '''
-    == EasyBPY 0.1.1 ==
-    Managed by Curtis Holt
-    https://curtisholt.online/links
-    ---
-    This purpose of this module is to simplify the use of the Blender API
-    (bpy) by creating an extra layer of abstraction that is more human-
-    readable, memorizable and reduces the user's exposure to complex code 
-    paths.
-    EasyBPY can be added to Blender by installing it into the:
-                ../scripts/modules
-    folder in the user preferences. The file can also be re-packaged with
-    any other addon, so long as the developer respects the limitations of
-    the GPL license, outlined below.
+
+    EasyBPY, basically make blender's api easier to understand, Yohello version
+
+    Curtis Holt has built up much of this project
 '''
 '''
     This program is free software: you can redistribute it and/or modify
