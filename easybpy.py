@@ -1,18 +1,9 @@
 #region INFO
 '''
-    == EasyBPY 0.0.9 ==
-    Managed by Curtis Holt
-    https://curtisholt.online/links
-    ---
-    This purpose of this module is to simplify the use of the Blender API
-    (bpy) by creating an extra layer of abstraction that is more human-
-    readable, memorizable and reduces the user's exposure to complex code 
-    paths.
-    EasyBPY can be added to Blender by installing it into the:
-                ../scripts/modules
-    folder in the user preferences. The file can also be re-packaged with
-    any other addon, so long as the developer respects the limitations of
-    the GPL license, outlined below.
+
+    EasyBPY, basically make blender's api easier to understand, Yohello version
+
+    Curtis Holt has built up much of this project
 '''
 '''
     This program is free software: you can redistribute it and/or modify
@@ -464,17 +455,25 @@ def select_objects_with_modifiers():
             select_object(obj)
 
 # Custom Selection
-def get_objects_including(include):
+def get_objects_including(include, case_sensitive = True):
     objlist = []
     for o in bpy.data.objects:
-        if include in o.name:
-            objlist.append(o)
+        if case_sensitive is True:
+            if include in o.name:
+                objlist.append(o)
+        else:
+            if (include.lower() in o.name) or (include.upper() in o.name) or (include in o.name):
+                objlist.append(o)
     return objlist
 
-def select_objects_including(include):
+def select_objects_including(include, case_sensitive = True):
     for o in bpy.data.objects:
-        if include in o.name:
-            o.select_set(True)
+        if case_sensitive is True:
+            if include in o.name:
+                o.select_set(True)
+        else:
+            if (include.lower() in o.name) or (include.upper() in o.name) or (include in o.name):
+                o.select_set(True)
 
 def get_objects_by_vertex(count = 0, mode="EQUAL"):
     cmode = mode.upper()
@@ -643,6 +642,130 @@ def create_text_object():
 def create_text():
     return create_text_object()
 
+#endregion
+#region OBJECTS - CONSTRAINTS
+def add_constraint(type, ref = None, name = ""):
+    objref = get_object(ref)
+    new_con = objref.constraints.new(type)
+    if name : 
+        new_con.name = name
+    for area in bpy.context.screen.areas:
+        if area.type == 'PROPERTIES':
+            area.tag_redraw()
+    return new_con
+
+def get_constraint(name, ref = None):
+    objref = get_object(ref)
+
+    # we assume name is string
+    if name in objref.constraints:
+        return objref.constraints[name]
+    else:
+        # Maybe return the 1st constraint on selected object?
+        return None
+
+def get_constraints_by_type(type,ref = None):
+    objref = get_object(ref)
+    constraints = [con for con in objref.constraints if con.type == type]
+    return constraints
+
+def remove_constraint(name = None, ref = None):
+    objref = get_object(ref)
+
+    if name is not None:
+        if is_string(name):
+            if name in objref.constraints:
+                mod = get_constraint(name,objref)
+                objref.constraints.remove(mod)
+        else:
+            objref.constraints.remove(name)
+    else:
+        remove_constraint(objref.constraints[0])
+    
+    for area in bpy.context.screen.areas:
+        if area.type == 'PROPERTIES':
+            area.tag_redraw()
+
+def add_camera_solver_constraint(ref = None, name = ""):
+    return add_constraint('CAMERA_SOLVER', ref, name)
+
+def add_follow_track_constraint(ref = None, name = ""):
+    return add_constraint('FOLLOW_TRACK', ref, name)
+
+def add_object_solver_constraint(ref = None, name = ""):
+    return add_constraint('OBJECT_SOLVER', ref, name)
+
+def add_copy_location_constraint(ref = None, name = ""):
+    return add_constraint('COPY_LOCATION', ref, name)
+
+def add_copy_rotation_constraint(ref = None, name = ""):
+    return add_constraint('COPY_ROTATION', ref, name)
+
+def add_copy_scale_constraint(ref = None, name = ""):
+    return add_constraint('COPY_SCALE', ref, name)
+
+def add_copy_transforms_constraint(ref = None, name = ""):
+    return add_constraint('COPY_TRANSFORMS', ref, name)
+
+def add_limit_distance_constraint(ref = None, name = ""):
+    return add_constraint('LIMIT_DISTANCE', ref, name)
+
+def add_limit_location_constraint(ref = None, name = ""):
+    return add_constraint('LIMIT_LOCATION', ref, name)
+
+def add_limit_rotation_constraint(ref = None, name = ""):
+    return add_constraint('LIMIT_ROTATION', ref, name)
+
+def add_limit_scale_constraint(ref = None, name = ""):
+    return add_constraint('LIMIT_SCALE', ref, name)
+
+def add_maintain_volume_constraint(ref = None, name = ""):
+    return add_constraint('MAINTAIN_VOLUME', ref, name)
+
+def add_transform_constraint(ref = None, name = ""):
+    return add_constraint('TRANSFORM', ref, name)
+
+def add_transformation_constraint(ref = None, name = ""):
+    return add_constraint('TRANSFORM', ref, name)
+
+def add_transform_cache_constraint(ref = None, name = ""):
+    return add_constraint('TRANSFORM_CACHE', ref, name)
+
+def add_clamp_to_constraint(ref = None, name = ""):
+    return add_constraint('CLAMP_TO', ref, name)
+
+def add_damped_track_constraint(ref = None, name = ""):
+    return add_constraint('DAMPED_TRACK', ref, name)
+
+def add_locked_track_constraint(ref = None, name = ""):
+    return add_constraint('LOCKED_TRACK', ref, name)
+
+def add_stretch_to_constraint(ref = None, name = ""):
+    return add_constraint('STRETCH_TO', ref, name)
+
+def add_track_to_constraint(ref = None, name = ""):
+    return add_constraint('TRACK_TO', ref, name)
+
+def add_action_constraint(ref = None, name = ""):
+    return add_constraint('ACTION', ref, name)
+
+def add_armature_constraint(ref = None, name = ""):
+    return add_constraint('ARMATURE', ref, name)
+
+def add_child_of_constraint(ref = None, name = ""):
+    return add_constraint('CHILD_OF', ref, name)
+
+def add_floor_constraint(ref = None, name = ""):
+    return add_constraint('FLOOR', ref, name)
+
+def add_follow_path_constraint(ref = None, name = ""):
+    return add_constraint('FOLLOW_PATH', ref, name)
+
+def add_pivot_constraint(ref = None, name = ""):
+    return add_constraint('PIVOT', ref, name)
+
+def add_shrinkwrap_constraint(ref = None, name = ""):
+    return add_constraint('SHRINKWRAP', ref, name)
 #endregion
 #region MODES
 def set_mode(ref=None, newmode=None):
@@ -1388,6 +1511,18 @@ def light_power_add(val = 0, ref = None):
 
 def light_intensity_add(val = 0, ref = None):
     light_power_add(val,ref)
+
+def light_power_multiply(val = 0, ref = None):
+    objlist = []
+    if ref is None:
+        objlist = so()
+    else:
+        objlist = [ref]
+    for o in objlist:
+        o.data.energy *= val
+
+def light_intensity_multiply(val = 0, ref = None):
+    light_power_multiply(val,ref)
 #endregion
 #region MESHES
 # Creates a mesh - (string) name
@@ -1649,9 +1784,10 @@ def delete_material(ref):
         matref = ref
     bpy.data.materials.remove(matref)
 
-def get_material(ref=None):
-    objref = get_object(ref)
-    return objref.material_slots[0].material
+def get_material(matname):
+    for m in bpy.data.materials:
+        if m.name == matname:
+            return m
 
 def add_material_to_object(ref, mat):
     objref = None
@@ -1683,6 +1819,18 @@ def remove_material_from_object(ref, matname):
 def remove_material(ref, matname):
     return remove_material_from_object(ref, matname)
 
+def remove_unused_material_slots(ref = None):
+    objrefs = get_objects(ref)
+    for o in objrefs:
+        data = o.data
+        tmp = data.materials.items()
+        data.materials.clear()
+        for item in tmp:
+            data.materials.append(item[1])
+
+def remove_unused_slots(ref = None):
+    remove_unused_material_slots(ref)
+
 def get_all_materials():
     return bpy.data.materials
 
@@ -1691,6 +1839,10 @@ def get_materials(ref = None):
         get_materials_from_object(ref)
     else:
         return bpy.data.materials
+
+def get_material_from_object(ref):
+    objref = get_object(ref)
+    return objref.material_slots[0].material
 
 def get_materials_from_object(ref):
     objref = get_object(ref)
@@ -1818,13 +1970,21 @@ def delete_image(ref):
 
 #endregion
 #region MODIFIERS 
-def add_modifier(ref, name, id):
-    objref = get_object(ref)
-    new_mod = objref.modifiers.new(name, id)
+def add_modifier(ref = None, name = "Modifier", id="SUBSURF"):
+    objrefs = get_objects(ref)
+    new_mods = []
+    for o in objrefs:
+        new_mod = o.modifiers.new(name, id)
+        new_mods.append(new_mod)
+
     for area in bpy.context.screen.areas:
         if area.type == 'PROPERTIES':
             area.tag_redraw()
-    return new_mod
+    
+    if len(new_mods)>1:
+        return new_mods
+    else:
+        return new_mods[0]
 
 def get_modifier(ref, name):
     objref = get_object(ref)
@@ -1835,23 +1995,30 @@ def get_modifier(ref, name):
     else:
         return False
 
-def remove_modifier(ref, name):
-    objref = None
-    if is_string(ref):
-        objref = get_object(ref)
+def remove_modifier(ref = None, name = None):
+    objref = get_object(ref)
+    if name is not None:
+        if is_string(name):
+            if name in objref.modifiers:
+                mod = get_modifier(objref,name)
+                objref.modifiers.remove(mod)
+        else:
+            objref.modifiers.remove(name)
     else:
-        objref = ref
-
-    if is_string(name):
-        if name in objref.modifiers:
-            mod = get_modifier(objref,name)
-            objref.modifiers.remove(mod)
-    else:
-        objref.modifiers.remove(name)
+        objref.modifiers.remove(objref.modifiers[0])
     
     for area in bpy.context.screen.areas:
         if area.type == 'PROPERTIES':
             area.tag_redraw()
+
+def remove_modifiers(ref = None):
+    objref = get_objects(ref)
+    for o in objref:
+        for m in o.modifiers:
+            o.modifiers.remove(m)
+
+def remove_all_modifiers(ref = None):
+    remove_modifiers(ref)
 
 def apply_all_modifiers(ref = None):
     objref = get_object(ref)
@@ -2059,6 +2226,731 @@ def add_rigid_body_constraint_physics(ref=None):
     bpy.context.view_layer.objects.active = objref
     bpy.ops.rigidbody.constraint_add()
 #endregion
+#region PHYSICS - FLUIDS
+def set_fluid_type_none():
+    bpy.context.object.modifiers["Fluid"].fluid_type = 'NONE'
+
+def set_fluid_type_domain():
+    bpy.context.object.modifiers["Fluid"].fluid_type = 'DOMAIN'
+
+def set_fluid_type_flow():
+    bpy.context.object.modifiers["Fluid"].fluid_type = 'FLOW'
+
+def set_fluid_type_effector():
+    bpy.context.object.modifiers["Fluid"].fluid_type = 'EFFECTOR'
+
+# Effector Parameters 
+def fluid_effector_type(type):
+    bpy.context.object.modifiers["Fluid"].effector_settings.effector_type = type
+
+def fluid_effector_subsample_value(value):
+    intvalue = int(value)
+    bpy.context.object.modifiers["Fluid"].effector_settings.subframes = intvalue
+
+def fluid_effector_thickness_value(value):
+    intvalue = int(value)
+    bpy.context.object.modifiers["Fluid"].effector_settings.surface_distance = intvalue
+
+# Use effector, 1 = on 0 = off
+def fluid_effector_use_toggle(fbool):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].effector_settings.use_effector = h
+
+# Is Planar, 1 = on 0 = off
+def fluid_effector_is_planar_toggle(fbool):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].effector_settings.use_plane_init = h
+
+def fluid_effector_velocity(value):
+    intvalue = int(value)
+    bpy.context.object.modifiers["Fluid"].effector_settings.velocity_factor = intvalue
+
+def fluid_effector_guide_mode(value):
+    if value == 'MAXIMUM' or value == 'MAX':
+        bpy.context.object.modifiers["Fluid"].effector_settings.guide_mode = 'MAXIMUM'
+    if value == 'MINIMUM' or value == 'MIN':
+        bpy.context.object.modifiers["Fluid"].effector_settings.guide_mode = 'MINIMUM'
+    if value == 'OVERRIDE' or value == 'OVER':
+        bpy.context.object.modifiers["Fluid"].effector_settings.guide_mode = 'OVERRIDE'
+    if value == 'AVERAGED' or value == 'MEAN':
+        bpy.context.object.modifiers["Fluid"].effector_settings.guide_mode = 'AVERAGED'
+
+# Type Flow Parameters
+def flow_type_set_smoke():
+    bpy.context.object.modifiers["Fluid"].flow_settings.flow_type = 'SMOKE'
+
+def flow_type_set_fire():
+    bpy.context.object.modifiers["Fluid"].flow_settings.flow_type = 'FIRE'
+
+def flow_type_set_fire_smoke():
+    bpy.context.object.modifiers["Fluid"].flow_settings.flow_type = 'BOTH'
+
+def flow_type_set_fluid():
+    bpy.context.object.modifiers["Fluid"].flow_settings.flow_type = 'LIQUID'
+
+def flow_set_behavior(value):
+    bpy.context.object.modifiers["Fluid"].flow_settings.flow_behavior = value
+
+def flow_use_flow_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].flow_settings.use_inflow = h
+
+def flow_source(value):
+    if value == 'PARTICLE SYSTEM':
+        value = 'PARTICLES'
+    bpy.context.object.modifiers["Fluid"].flow_settings.flow_source = value
+
+def flow_smoke_colour_rgb(r,g,b):
+    print(r+g+b)
+    rfloat = float(r)
+    gfloat = float(g)
+    bfloat = float(b)
+    bpy.context.object.modifiers["Fluid"].flow_settings.smoke_color = (rfloat,gfloat,bfloat)
+
+def flow_absolute_density(value):
+    bool = int(value)
+    bpy.context.object.modifiers["Fluid"].flow_settings.use_absolute = bool
+
+def flow_initial_temp(value):
+    temp = int(value)
+    bpy.context.object.modifiers["Fluid"].flow_settings.temperature = temp
+
+def flow_density(value):
+    density = int(value)
+    bpy.context.object.modifiers["Fluid"].flow_settings.density = density
+
+def flow_vertexgroup(value):
+    bpy.context.object.modifiers["Fluid"].flow_settings.density_vertex_group = value
+
+# Particle System
+def flow_particle_system_select(value):
+    bpy.context.object.modifiers["Fluid"].flow_settings.particle_system = bpy.data.objects["Cube"].particle_systems[value]
+
+def flow_particle_set_size_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].flow_settings.use_particle_size = h
+
+def flow_set_particle_size(value):
+    size = float(value)
+    bpy.context.object.modifiers["Fluid"].flow_settings.particle_size = size
+
+# Intial Velocity
+def flow_initial_velocity_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].flow_settings.use_initial_velocity = h
+
+def flow_initial_velocity_value(value):
+    velocity = float(value)
+    bpy.context.object.modifiers["Fluid"].flow_settings.velocity_factor = velocity
+
+# Domains
+def fluid_domain_set_gas():
+    bpy.context.object.modifiers["Fluid"].domain_settings.domain_type = 'GAS'
+
+def fluid_domain_set_liquid():
+    bpy.context.object.modifiers["Fluid"].domain_settings.domain_type = 'LIQUID'
+
+# Global Fluid Settings
+def fluid_domain_set_resolution(value):
+    res = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.resolution_max = res
+
+def fluid_domain_time_scale(value):
+    timespeed = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.time_scale = timespeed
+
+def fluid_domain_set_cfl(value):
+    CFL = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.cfl_condition = CFL
+
+def fluid_domain_set_timesteps_max(value):
+    timestep = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.timesteps_max = timestep
+
+def fluid_domain_set_timesteps_min(value):
+    timestep = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.timesteps_min = timestep
+
+# Border Collisions
+def fluid_domain_border_colisions(side,toggle):
+    bool = int(toggle)
+    if side == 'top' or side == 'TOP':
+        bpy.context.object.modifiers["Fluid"].domain_settings.use_collision_border_top = bool
+    if side == 'back' or side == 'BACK':
+        bpy.context.object.modifiers["Fluid"].domain_settings.use_collision_border_back = bool
+    if side == 'front' or side == 'FRONT':
+        bpy.context.object.modifiers["Fluid"].domain_settings.use_collision_border_front = bool
+    if side == 'right' or side == 'RIGHT':
+        bpy.context.object.modifiers["Fluid"].domain_settings.use_collision_border_right = bool
+    if side == 'left' or side == 'LEFT':
+        bpy.context.object.modifiers["Fluid"].domain_settings.use_collision_border_left = bool
+    if side == 'bottom' or side == 'BOTTOM':
+        bpy.context.object.modifiers["Fluid"].domain_settings.use_collision_border_bottom = bool
+
+# Caches      
+def fluid_domain_cache_folder(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.cache_directory = value
+
+def fluid_simulation_start(value):
+    start = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.cache_frame_start = start
+
+def fluid_simulation_end(value):
+    end = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.cache_frame_end = end
+
+def fluid_simulation_offset(value):
+    end = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.cache_frame_offset = end
+
+def fluid_cache_type(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.cache_type = value
+    #use REPLAY, MODULAR, and ALL
+
+def fluid_cache_continue_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.cache_resumable = h
+
+def fluid_cache_format(value):
+    if value.lower() == 'openvdb':
+        bpy.context.object.modifiers["Fluid"].domain_settings.cache_data_format = 'OPENVDB'
+    if value.lower() == 'uni cache':
+        bpy.context.object.modifiers["Fluid"].domain_settings.cache_data_format = 'UNI'
+
+def fluid_cache_format(value):
+    if value.lower() == 'zip':
+        bpy.context.object.modifiers["Fluid"].domain_settings.openvdb_cache_compress_type = 'ZIP'
+    if value.lower() == 'blosc':
+        bpy.context.object.modifiers["Fluid"].domain_settings.openvdb_cache_compress_type = 'BLOSC'
+    if value.lower() == 'none':
+        bpy.context.object.modifiers["Fluid"].domain_settings.openvdb_cache_compress_type = 'NONE'
+
+def fluid_cache_precision_vol(value):
+    print(value)
+    if value.lower() == 'half':
+        value = "16"
+    if value.lower() == 'full':
+        value = "32"
+    bpy.context.object.modifiers["Fluid"].domain_settings.openvdb_data_depth = value
+
+#Collections 
+def fluid_flow_collection(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.fluid_group = bpy.data.collections[value]
+
+def fluid_flow_effectorn(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_group = bpy.data.collections[value]
+
+#Guides
+def fluid_domain_guides_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_guide = h
+
+def fluid_domain_guide_weight(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.guide_alpha = val
+
+def fluid_domain_guides_size(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.guide_beta = val
+
+def fluid_domain_guides_velocity(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.guide_vel_factor = val
+
+def fluid_domain_guides_source(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.guide_source = value.upper()
+
+# Field Weights
+def fluid_field_weights_collection(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.collection = bpy.data.collections[value]
+
+def fluid_field_weights_gravity(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.gravity = val
+
+def fluid_field_weights_all(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.all = val
+
+def fluid_field_weights_force(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.force = val
+
+def fluid_field_weights_vortex(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.vortex = val
+
+def fluid_field_weights_magnetic(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.magnetic = val
+
+def fluid_field_weights_harmonic(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.harmonic = val
+
+def fluid_field_weights_charge(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.charge = val
+
+def fluid_field_weights_lennardjones(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.lennardjones = val
+
+def fluid_field_weights_wind(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.wind = val
+
+def fluid_field_weights_curve_guide(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.curve_guide = val
+
+def fluid_field_weights_texture(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.texture = val
+
+def fluid_field_weights_smoke_flow(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.smokeflow = val
+
+def fluid_field_weights_turbulence(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.turbulence = val
+
+def fluid_field_weights_drag(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.drag = val
+
+def fluid_field_weights_boid(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.effector_weights.boid = val
+
+# Viewport Display
+def fluid_view_thickness(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.display_thickness = val
+
+def fluid_view_interpolation(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.display_interpolation = value.upper()
+
+def fluid_view_slices_voxel(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.slice_per_voxel = val
+
+def fluid_view_slice_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_slice =h
+
+def fluid_view_slice_axis(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.slice_axis = value.upper
+
+def fluid_view_slice_position(value):
+    boolean = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.slice_depth = boolean 
+
+def fluid_view_grid_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_color_ramp = h
+
+def fluid_view_grid_scale(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.color_ramp_field_scale = val
+
+def fluid_view_grid_color_position(pos,stop):
+    val = float(pos)
+    position = int(stop)
+    C.active_object.modifiers["Fluid"].domain_settings.color_ramp.elements[position].position= val
+
+def fluid_view_grid_color_hue_interpolation(value):
+    bpy.context.active_object.modifiers["Fluid"].domain_settings.color_ramp.hue_interpolation = value.upper()
+
+def fluid_view_grid_color(stop,encoding,r,g,b,al):
+    bpy.context.active_object.modifiers["Fluid"].domain_settings.color_ramp.color_mode = encoding.upper()
+    stopint = int(stop)
+    red = float(r)
+    green = float(b)
+    blue = float(g)
+    alpha = float(al)
+    bpy.context.active_object.modifiers["Fluid"].domain_settings.color_ramp.elements[stopint].color = (red,green,blue,alpha)
+
+def fluid_view_grid_stops_new(value):
+    val = float(value)
+    bpy.context.active_object.modifiers["Fluid"].domain_settings.color_ramp.elements.new(val)
+
+def fluid_view_grid_stops_remove(value):
+    val = int(value)
+    bpy.context.active_object.modifiers["Fluid"].domain_settings.color_ramp.elements.remove( bpy.context.active_object.modifiers["Fluid"].domain_settings.color_ramp.elements[val] )
+
+def fluid_view_vector_dis_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_slice = h
+
+def fluid_view_vector_display_type(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.vector_display_type = value.upper()
+
+def fluid_view_vector_magnitude(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.vector_scale_with_magnitude = val
+
+def fluid_view_vector_field(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.vector_field = value.upper()
+
+def fluid_view_vector_scale(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.vector_scale = val
+
+# Gas Domain (not categorized)
+def fluid_gas_buoyancy_density(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.alpha = val
+
+def fluid_gas_buoyancy_heat(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.beta = val
+
+def fluid_gas_buoyancy_vorticity(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.vorticity = val
+
+# Dissolve
+def fluid_gas_dissolve_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_dissolve_smoke = h
+
+def fluid_gas_dissolve_time(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.dissolve_speed = val
+
+def fluid_gas_dissolve_slow_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_dissolve_smoke_log = h
+
+# Noise
+def fluid_gas_noise_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_noise = h
+
+def fluid_gas_noise_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.noise_scale = h
+
+def fluid_gas_noise_upres_factor(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.noise_scale = val
+
+def fluid_gas_noise_method(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.noise_type = value.upper()
+
+def fluid_gas_noise_strength(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.noise_strength = val
+
+def fluid_gas_noise_scale(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.noise_pos_scale = val
+
+def fluid_gas_noise_time(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.noise_time_anim = val
+
+# Fire
+def fluid_gas_fire_reaction_speed(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.burning_rate = val
+
+def fluid_gas_fire_smoke(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.flame_smoke = val
+
+def fluid_gas_fire_vorticity(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.flame_vorticity = val
+
+def fluid_gas_fire_temp_max(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.flame_max_temp = val
+
+def fluid_gas_fire_temp_min(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.flame_ignition = val
+
+def fluid_gas_fire_color_rgb(red,green,blue):
+    r = float(red)
+    g = float(green)
+    b = float(blue)
+    bpy.context.object.modifiers["Fluid"].domain_settings.flame_smoke_color = (r, g, b)
+
+# Fluid
+def fluid_fluid_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_flip_particles = h
+
+def fluid_fluid_flip_ratio(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.flip_ratio = val
+
+def fluid_fluid_particle_max(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sys_particle_maximum = val
+
+def fluid_fluid_particle_radius(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.particle_radius = val
+
+def fluid_fluid_particle_sampling(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.particle_number = val
+
+def fluid_fluid_particle_random(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.particle_randomness = val
+
+def fluid_fluid_cell_max(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.particle_max = val
+
+def fluid_fluid_cell_min(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.particle_min = val
+
+def fluid_fluid_narrow_bandwidth(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.particle_band_width = val
+
+def fluid_fluid_frac_obs_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_fractions = h
+
+def fluid_fluid_obs_distance(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.fractions_distance = val
+
+def fluid_fluid_obs_threshold(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.fractions_threshold = val
+
+def fluid_fluid_diffusion_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_diffusion = h
+
+def fluid_fluid_diffusion_base(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.viscosity_base = val
+
+def fluid_fluid_diffusion_exponent(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.viscosity_exponent = val
+
+def fluid_fluid_diffusion_surface(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.surface_tension = val
+
+def fluid_fluid_particles_bubbles_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_bubble_particles = h
+
+def fluid_fluid_particles_foam_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_foam_particles = h
+
+def fluid_fluid_particles_spray_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_spray_particles = h
+
+def fluid_fluid_particles_combined_export(value):
+    value = value.replace(" ", "_")
+    value = value.upper()
+    print(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_combined_export = value
+
+def fluid_fluid_particles_wave_crest_potential_maximum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_max_wavecrest = val
+
+def fluid_fluid_particles_wave_crest_potential_minimum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_min_wavecrest = val
+
+def fluid_fluid_particles_traped_air_potential_minimum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_max_trappedair = val
+
+def fluid_fluid_particles_traped_air_potential_minimum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_min_trappedair = val
+
+def fluid_fluid_particles_kinetic_potential_minimum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_max_energy = val
+
+def fluid_fluid_particles_kinetic_potential_minimum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_min_energy = val
+
+def fluid_fluid_particles_potential_radius(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_min_energy = val
+
+def fluid_fluid_particles_particle_update_radius(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_potential_min_energy = val
+
+def fluid_fluid_particles_wave_crest_particle_sampling(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_sampling_trappedair = val
+
+def fluid_fluid_particles_traped_air_particle_sampling(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_sampling_wavecrest = val
+
+def fluid_fluid_particles_particle_life_maximum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_life_max = val
+
+def fluid_fluid_particles_particle_life_minimum(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_life_min = val
+
+def fluid_fluid_particles_bubble_buoyancy(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_bubble_buoyancy = val
+
+def fluid_fluid_particles_bubble_drag(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_bubble_drag = val
+
+def fluid_fluid_particles_particles_in_boundary(value):
+    bpy.context.object.modifiers["Fluid"].domain_settings.sndparticle_boundary = value.upper()
+
+def fluid_fluid_mesh_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_mesh = h
+
+def fluid_fluid_mesh_upres(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.mesh_scale = val
+
+def fluid_fluid_mesh_particle_radius(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.mesh_particle_radius = val
+
+def fluid_fluid_mesh_smooth_pos(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.mesh_smoothen_pos = val
+
+def fluid_fluid_mesh_smooth_pos(value):
+    val = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.mesh_smoothen_pos = val
+
+def fluid_fluid_mesh_use_speed_vectors(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)    
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_speed_vectors = h
+
+def fluid_fluid_mesh_generator(value):
+    if value.upper() == 'FINAL':
+        bpy.context.object.modifiers["Fluid"].domain_settings.mesh_generator = 'IMPROVED'
+    elif value.upper() == 'PREVIEW':
+        bpy.context.object.modifiers["Fluid"].domain_settings.mesh_generator = 'UNION'
+
+def fluid_fluid_mesh_concavity_upper(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.mesh_concave_upper = val
+
+def fluid_fluid_mesh_concavity_lower(value):
+    val = float(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.mesh_concave_lower = val
+
+# Adpative Domain
+def fluid_domain_adapt_toggle(value):
+    if value.upper() == 'FALSE':
+        h =bool(False)
+    elif value.upper() == 'TRUE':
+        h =bool(True)
+    bpy.context.object.modifiers["Fluid"].domain_settings.use_adaptive_domain = h
+
+def fluid_domain_adapt_res(value):
+    intval = int(value)
+    bpy.context.object.modifiers["Fluid"].domain_settings.additional_res = intval
+
+def fluid_domain_adapt_margin(value):
+    intval = int(value)
+    if intval > 24:
+        print("Too high")
+    else:
+        bpy.context.object.modifiers["Fluid"].domain_settings.adapt_margin = intval
+
+def fluid_domain_adapt_threshold(value):
+    floatval = float(value)
+    if floatval > 1:
+        print("Too high")
+    else:
+        bpy.context.object.modifiers["Fluid"].domain_settings.adapt_threshold = floatval
+#endregion
 #region TEXT OBJECTS
 def create_text_file(textname):
     return bpy.data.texts.new(textname)
@@ -2131,6 +3023,10 @@ def organize_outliner():
     m = move_objects_to_collection
     ce = collection_exists
     gc = get_collection
+
+    if bpy.context.active_object != None:
+        if bpy.context.active_object.mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode='OBJECT')
 
     # Cameras
     d()
@@ -2309,8 +3205,8 @@ def suffix_convert_dataset(data):
         nn = d.name
         if '_' in d.name:
             r = d.name.split('_')
-            if '.' in r[1]:
-                r2 = r[1].split('.')
+            if '.' in r[-1]:
+                r2 = r[-1].split('.')
                 if r2[0].isdigit():
                     val = int(r2[0]) + int(r2[1])
                     nn = r[0] + '_' + str(val)
@@ -2318,11 +3214,20 @@ def suffix_convert_dataset(data):
                     while nn in data:
                         nn = r[0] + '_' + str(val + i)
                         i += 1
+                else:
+                    if r2[1].isdigit():
+                        val = int(r2[1])
+                        i = 0
+                        nn = ""
+                        while i < len(r)-1:
+                            nn = nn + r[i] + "_"
+                            i+=1
+                        nn = nn + r2[0] + "_" + str(val)
         else:
             if '.' in d.name:
                 r = d.name.split('.')
-                if r[1].isdigit():
-                    val = int(r[1])
+                if r[-1].isdigit():
+                    val = int(r[-1])
                     nn = r[0] + '_' + str(val)
                     i = 1
                     while nn in data:
@@ -2340,4 +3245,13 @@ def convert_suffixes_underscore():
 def convert_suffixes():
     convert_suffixes_underscore()
 
+def add_prefix_to_name(ref, prefix, delim="_"):
+    objlist = make_obj_list(ref)
+    for o in objlist:
+        o.name = prefix + delim + o.name
+
+def add_suffix_to_name(ref, suffix, delim="_"):
+    objlist = make_obj_list(ref)
+    for o in objlist:
+        o.name = o.name + delim + suffix
 #endregion
