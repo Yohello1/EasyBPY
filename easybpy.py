@@ -1,7 +1,7 @@
 #region INFO
 '''
 
-    EasyBPY, basically make blender's api easier to understand, Yohello version
+    NewBPY, basically make blender's api easier to understand, Yohello version
 
     Curtis Holt has built up much of this project
 '''
@@ -29,17 +29,17 @@ import random
 from math import radians
 #endregion
 #region RENDER SETTINGS
-def set_render_engine_to_cycles():
-    get_scene().render.engine = 'CYCLES'
 
 def set_render_engine_cycles():
-    set_render_engine_to_cycles()
-
-def set_render_engine_to_eevee():
-    get_scene().render.engine = 'BLENDER_EEVEE'
+    bpy.context.scene.render.engine = 'CYCLES'
 
 def set_render_engine_eevee():
-    set_render_engine_to_eevee()
+    bpy.context.scene.render.engine = 'BLENDER_EEVEE'
+
+def set_render_engine_workbench():
+    bpy.context.scene.render.engine = 'BLENDER_WORKBENCH'
+
+
 
 def render_image(use_view = False):
     bpy.ops.render.render(use_viewport=use_view)
@@ -54,8 +54,8 @@ def set_render_resolution(x, y):
 
 def get_render_resolution():
     reslist = []
-    reslist.append(get_scene().render.resolution_x)
-    reslist.append(get_scene().render.resolution_y)
+    reslist.append(get_scene("Scene").render.resolution_x)
+    reslist.append(get_scene("Scene").render.resolution_y)
     return reslist
 
 def render_resolution(x = None, y = None):
