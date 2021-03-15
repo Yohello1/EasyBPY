@@ -30,6 +30,11 @@ from math import radians
 #endregion
 #region RENDER SETTINGS
 
+#fix some old broken code from curt
+get_scene = bpy.context.scene
+
+
+
 def set_render_engine_cycles():
     bpy.context.scene.render.engine = 'CYCLES'
 
@@ -49,13 +54,13 @@ def render_animation(use_view = False):
     bpy.ops.render.render(animation=True, use_viewport=use_view)
 
 def set_render_resolution(x, y):
-    get_scene().render.resolution_x = x
-    get_scene().render.resolution_y = y
+    get_scene.render.resolution_x = x
+    get_scene.render.resolution_y = y
 
 def get_render_resolution():
     reslist = []
-    reslist.append(get_scene("Scene").render.resolution_x)
-    reslist.append(get_scene("Scene").render.resolution_y)
+    reslist.append(.render.resolution_x)
+    reslist.append(Scene.render.resolution_y)
     return reslist
 
 def render_resolution(x = None, y = None):
@@ -65,7 +70,7 @@ def render_resolution(x = None, y = None):
         return get_render_resolution()
 
 def set_render_resolution_percentage(percent):
-    get_scene().render.resolution_percentage = percent
+    get_scene.render.resolution_percentage = percent
 
 def set_render_percentage(percent = None):
     set_render_resolution_percentage(percent)
@@ -74,7 +79,7 @@ def set_render_percent(percent = None):
     set_render_resolution_percentage(percent)
 
 def get_render_resolution_percentage():
-    return get_scene().render.resolution_percentage
+    return get_scene.render.resolution_percentage
 
 def render_resolution_percentage(percent = None):
     if percent is not None:
@@ -83,13 +88,13 @@ def render_resolution_percentage(percent = None):
         return get_render_resolution_percentage()
 
 def set_render_pixel_aspect_ratio(x, y):
-    get_scene().render.pixel_aspect_x = x
-    get_scene().render.pixel_aspect_y = y
+    get_scene.render.pixel_aspect_x = x
+    get_scene.render.pixel_aspect_y = y
 
 def get_render_pixel_aspect_ratio():
     aspectlist = []
-    aspectlist.append(get_scene().render.pixel_aspect_x)
-    aspectlist.append(get_scene().render.pixel_aspect_y)
+    aspectlist.append(get_scene.render.pixel_aspect_x)
+    aspectlist.append(get_scene.render.pixel_aspect_y)
     return aspectlist
 
 def render_aspect_ratio(x = None, y = None):
@@ -100,24 +105,24 @@ def render_aspect_ratio(x = None, y = None):
 
 def current_frame(val = None):
     if val is None:
-        return get_scene().frame_current
+        return get_scene.frame_current
     else:
-        get_scene().frame_current = val
+        get_scene.frame_current = val
 
 def set_frame(val = None):
     current_frame(val)
 
 def frame_start(val = None):
     if val is None:
-        return get_scene().frame_start
+        return get_scene.frame_start
     else:
-        get_scene().frame_start = val
+        get_scene.frame_start = val
 
 def frame_end(val = None):
     if val is None:
-        return get_scene().frame_end
+        return get_scene.frame_end
     else:
-        get_scene().frame_end = val
+        get_scene.frame_end = val
 
 def set_current_frame(val = None):
     current_frame(val)
@@ -139,11 +144,11 @@ def set_frame_interval(start = None, end = None):
     frame_end(end)
 
 def set_frame_step(val):
-    get_scene().frame_step = val
+    get_scene.frame_step = val
 
 def set_render_fps(val, base = 1.0):
-    get_scene().render.fps = val
-    get_scene().render.fps_base = base
+    get_scene.render.fps = val
+    get_scene.render.fps_base = base
 #endregion
 #region OBJECTS
 def create_object(name, col = None):
@@ -814,7 +819,7 @@ def texture_paint_mode(ref=None):
     set_texture_paint_mode(ref)
 #endregion
 #region SCENES
-def get_scene():
+def get_scene:
     return bpy.context.scene
 #endregion
 #region VISIBILITY
@@ -1055,9 +1060,9 @@ def rotate_around_axis(deg, axis = Vector(), ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             pointref = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             pointref = get_cursor_location()
         else:
             pointref = get_median_point_of_objects(objs)
@@ -1099,9 +1104,9 @@ def rotate_around_local_axis(deg, axis = Vector(), ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             pointref = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             pointref = get_cursor_location()
         else:
             pointref = get_median_point_of_objects(objs)
@@ -1141,9 +1146,9 @@ def scale_along_axis(val, axis, ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             pointref = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             pointref = get_cursor_location()
         else:
             pointref = get_median_point_of_objects(objs)
@@ -1196,9 +1201,9 @@ def scale_along_global_axis(val, axis, ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             point = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             point = get_cursor_location()
         else:
             point = get_median_point_of_objects(objs)
@@ -1232,9 +1237,9 @@ def scale_perpendicular_to_x(val, ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             pointref = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             pointref = get_cursor_location()
         else:
             pointref = get_median_point_of_objects(objs)
@@ -1251,9 +1256,9 @@ def scale_perpendicular_to_y(val, ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             pointref = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             pointref = get_cursor_location()
         else:
             pointref = get_median_point_of_objects(objs)
@@ -1270,9 +1275,9 @@ def scale_perpendicular_to_z(val, ref = None, point = None):
     objs = make_obj_list(ref)
     pointref = None
     if point is None:
-        if get_scene().tool_settings.transform_pivot_point == 'MEDIAN_POINT':
+        if get_scene.tool_settings.transform_pivot_point == 'MEDIAN_POINT':
             pointref = get_median_point_of_objects(objs)
-        elif get_scene().tool_settings.transform_pivot_point == 'CURSOR':
+        elif get_scene.tool_settings.transform_pivot_point == 'CURSOR':
             pointref = get_cursor_location()
         else:
             pointref = get_median_point_of_objects(objs)
@@ -1378,19 +1383,19 @@ def get_cursor_rotation_mode():
 #endregion
 #region PIVOT POINT
 def set_pivot_point_to_cursor():
-    get_scene().tool_settings.transform_pivot_point = 'CURSOR'
+    get_scene.tool_settings.transform_pivot_point = 'CURSOR'
 
 def set_pivot_point_to_median():
-    get_scene().tool_settings.transform_pivot_point = 'MEDIAN_POINT'
+    get_scene.tool_settings.transform_pivot_point = 'MEDIAN_POINT'
 
 def set_pivot_point_to_individual_origins():
-    get_scene().tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
+    get_scene.tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
 
 def set_pivot_point_to_active_element():
-    get_scene().tool_settings.transform_pivot_point = 'ACTIVE_ELEMENT'
+    get_scene.tool_settings.transform_pivot_point = 'ACTIVE_ELEMENT'
 
 def set_pivot_point_to_bounding_box_center():
-    get_scene().tool_settings.transform_pivot_point = 'BOUNDING_BOX_CENTER'
+    get_scene.tool_settings.transform_pivot_point = 'BOUNDING_BOX_CENTER'
 #endregion
 #region ORIGINS
 def set_geometry_to_origin(ref = None):
@@ -2158,7 +2163,7 @@ def add_warp(ref=None, modname = "Warp"):
 
 def add_wave(ref=None, modname = "Wave"):
     mod = add_modifier(ref,modname,'WAVE')
-    mod.time_offset = random.random() * get_scene().render.fps
+    mod.time_offset = random.random() * get_scene.render.fps
     return mod
 
 def add_cloth(ref=None, modname = "Cloth"):
