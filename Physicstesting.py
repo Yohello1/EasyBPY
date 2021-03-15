@@ -726,5 +726,8 @@ def rigidbody_type_set(value):
 
 #test this out again
 def rigidbody_setting_animated(value):
-    text = bool(value)
-    bpy.context.object.rigid_body.kinematic = boolean
+    if value.upper() == 'FALSE':
+        h = False
+    elif value.upper() == 'TRUE':
+        h = True
+    bpy.context.object.rigid_body.kinematic = h
