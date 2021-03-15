@@ -698,4 +698,33 @@ def fluid_domain_adapt_threshold(value):
         
         
         
-        
+
+
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+# Rigid body
+
+def add_rigid_body():
+    bpy.ops.rigidbody.object_add()
+
+def rigidbody_type_set(value):
+    bpy.context.object.rigid_body.type = value.upper()
+
+#test this out again
+def rigidbody_setting_animated(value):
+    text = bool(value)
+    bpy.context.object.rigid_body.kinematic = boolean
