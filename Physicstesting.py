@@ -724,10 +724,36 @@ def add_rigid_body():
 def rigidbody_type_set(value):
     bpy.context.object.rigid_body.type = value.upper()
 
-#test this out again
 def rigidbody_setting_animated(value):
     if value.upper() == 'FALSE':
         h = False
     elif value.upper() == 'TRUE':
         h = True
+        print("Hello there")
     bpy.context.object.rigid_body.kinematic = h
+
+def rigidbody_shape(value):
+    val = value.replace(" ", "_")
+    bpy.context.object.rigid_body.collision_shape = val.upper()
+
+def rigidbody_shape_source(value):
+    bpy.context.object.rigid_body.mesh_source = value.upper()
+
+def rigidbody_surface_response_friction(value):
+    val = float(value)
+    bpy.context.object.rigid_body.friction = val
+
+def rigidbody_surface_response_friction(value):
+    val = float(value)
+    bpy.context.object.rigid_body.restitution = val
+
+def rigidbody_sensitivity_margin_toggle(value):
+    if value.upper() == 'FALSE':
+        h = False
+    elif value.upper() == 'TRUE':
+        h = True
+    bpy.context.object.rigid_body.use_margin = h
+
+def rigidbody_sensitivity_margin_amount("value"):
+    val = float(value)
+    bpy.context.object.rigid_body.collision_margin = val
