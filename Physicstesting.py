@@ -757,3 +757,43 @@ def rigidbody_sensitivity_margin_toggle(value):
 def rigidbody_sensitivity_margin_amount("value"):
     val = float(value)
     bpy.context.object.rigid_body.collision_margin = val
+
+def rigidbody_collection_select(value):
+    val = int(value)
+    bpy.context.object.rigid_body.collision_collections[val] = True
+
+def rigidbody_collection_deselect(value):
+    val = int(value)
+    bpy.context.object.rigid_body.collision_collections[val] = False
+
+def rigidbody_dynamics_damping_translation(value):
+    val = float(value)
+    bpy.context.object.rigid_body.linear_damping = 1
+
+
+def rigidbody_dynamics_rotation(value):
+    val = float(value)
+    bpy.context.object.rigid_body.rotation_damping = 1
+
+def rigidbody_dynamics_deactivation(value):
+    if value.upper() == 'FALSE':
+        h = False
+    elif value.upper() == 'TRUE':
+        h = True
+    bpy.context.object.rigid_body.use_deactivation = h
+
+def rigidbody_dynamics_deactivation_start(value)
+    if value.upper() == 'FALSE':
+        h = False
+    elif value.upper() == 'TRUE':
+        h = True
+    bpy.context.object.rigid_body.use_start_deactivated = h
+
+def rigidbody_dynamics_deactivation_velocity(value):
+    val = float(value)
+    bpy.context.object.rigid_body.deactivate_linear_velocity = val
+
+def rigidbody_dynamics_deactivation_angular(value):
+    val = float(value)
+    bpy.context.object.rigid_body.deactivate_angular_velocity = val
+
