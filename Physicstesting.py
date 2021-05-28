@@ -696,25 +696,85 @@ def fluid_domain_adapt_threshold(value):
     else:
         bpy.context.object.modifiers["Fluid"].domain_settings.adapt_threshold = floatval
         
-        
+#colision
+
+def collision_use(value):
+    if value.upper() == "TRUE":
+        bpy.context.object.collision.use = True
+    else:
+        bpy.context.object.collision.use = False
+
+def collision_set_feild_absorption(value):
+    val = float(value)
+    bpy.context.object.collision.absorption = val
+
+def collision_particle_pemability(value):
+    val = float(value)
+    bpy.context.object.collision.permeability = val
+
+def collision_particle_sticky(value):
+    val = float(value)
+    bpy.context.object.collision.stickiness = val
+
+def collision_particle_kill_toggle(value):
+    if value.upper() == "TRUE":
+        bpy.context.object.collision.use_particle_kill = True
+    else:
+        bpy.context.object.collision.use_particle_kill = False
+
+def collision_particle_friction(value):
+    val = float(value)
+    bpy.context.object.collision.friction_factor = val
+
+def collision_particle_randomize(value):
+    val = float(value)
+    bpy.context.object.collision.friction_random = value
+
+def collision_particle_damping(value):
+    val = float(value)
+    bpy.context.object.collision.damping_factor = val
+
+def collision_particle_randomize2(value):
+    val = float(value)
+    bpy.context.object.collision.damping_random = val
+
+def collision_soft_cloth_damping(value):
+    val = float(value)
+    bpy.context.object.collision.damping = val
+
+def collision_soft_cloth_friction(value):
+    val = float(value)
+    bpy.context.object.collision.cloth_friction = val
+
+def collision_soft_cloth_thick_out(value):
+    val = float(value)
+    bpy.context.object.collision.thickness_outer = val
+
+def collision_soft_cloth_thick_in(value):
+    val = float(value)
+    bpy.context.object.collision.thickness_inner = val
+
+def collision_soft_cloth_single_side_toggle(value):
+    if value.upper() == "TRUE":
+        bpy.context.object.collision.use_culling = True
+    else:
+        bpy.context.object.collision.use_culling = False
+    
+def collision_soft_cloth_override_normals_toggle(value):
+    if value.upper() == "TRUE":
+        bpy.context.object.collision.use_normal = True
+    else:
+        bpy.context.object.collision.use_normal = False
+
+#Please let this one thing stay
+def deja_vu():
+    print("DEJA VU")
+    print("I've just been in this line before")
+    print("Higher and Higher I know it's my place to gooooo")
+    print("Calling you, the val is a mystery")
+    print("I've wirtten these same lines a thousand times before, just slightly differently which is why I put this here. It gives me a deja vu like feeling")
         
 
-
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
-# Rigid body
 # Rigid body
 # Rigid body
 
